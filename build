@@ -1,0 +1,7 @@
+#!/bin/sh
+
+rm kernel.img
+make clean
+make
+
+dd if=kernel.img of=disk.img bs=512 count=128 conv=notrunc

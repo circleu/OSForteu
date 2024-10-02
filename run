@@ -1,0 +1,3 @@
+#!/bin/sh
+
+qemu-system-i386 -hda disk.img -m 4096M -boot cd -no-reboot -no-shutdown -vga std -d int
