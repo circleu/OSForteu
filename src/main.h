@@ -4,3 +4,4 @@
 #include "osforteuasm.h"
 #include "int.h"
 #include "fs.h"
+#include "osforteudata.h"

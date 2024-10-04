@@ -10,5 +10,6 @@
 #define ASM_GET_AL(dest) asm volatile("mov %0, al;":"=r"((UINT8)dest))
 #define ASM_REP_OUTSW(dest, origin, count) asm volatile("mov dx, %0; mov esi, %1; mov ecx, %2; rep outsw;"::"r"((UINT16)dest), "r"(origin), "r"(count))
 #define ASM_REP_INSW(dest, origin, count) asm volatile("mov dx, %0; mov edi, %1; mov ecx, %2; rep insw;"::"r"((UINT16)origin), "r"(dest), "r"(count))
-
+// #define ASM_OUTW(dest, origin) asm volatile("mov ax, %0; mov dx, %1; out dx, ax;"::"r"((UINT16)origin), "r"((UINT16)dest))
+// #define ASM_INW(dest, origin) asm volatile("mov ax, %0; mov dx, %1; in ax, dx;"::"r"((UINT16)dest), "r"((UINT16)origin))
 

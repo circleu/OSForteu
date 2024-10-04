@@ -2,6 +2,7 @@
 
 #include "osforteutype.h"
 #include "osforteuasm.h"
+#include "scr.h"
 
 #define ATA_PRIMARY_BUS0 0x1f0 // data[R/W] | 16 bit
 #define ATA_PRIMARY_BUS1 0x1f1 // error[R], features[W] | 8/16 bit
@@ -57,10 +58,15 @@
 #define ATA_SECONDARY_CONTROL0 0x376
 #define ATA_SECONDARY_CONTROL1 0x377
 
+#define FS_START_SECTOR 128
 
-UINT8 ATA_GET_STATUS();
-BOOL ATA_IS_BSY();
-BOOL ATA_IS_RDY();
-BOOL ATA_IS_DRQ();
-BOOL ATA_IS_ERR();
-BOOL ATA_IS_LBA48();
+
+UINT8 ATA_Get_STATUS();
+VOID ATA_Get_IDENTIFY(UINT16* buffer);
+BOOL ATA_Is_BSY();
+BOOL ATA_Is_RDY();
+BOOL ATA_Is_DRQ();
+BOOL ATA_Is_ERR();
+BOOL ATA_Is_LBA48();
+VOID ATA_Read_Sector(UINT64 sector, UINT8* buffer);
+VOID ATA_Read_Cluster(UINT64 cluster, UINT8* buffer);
