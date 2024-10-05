@@ -1,7 +1,8 @@
 #pragma once
 
-#include "osforteutype.h"
-#include "osforteuasm.h"
+#include "type.h"
+#include "asm.h"
 #include "int.h"
 #include "fs.h"
-#include "osforteudata.h"
+#include "data.h"
+#include "math64.h"

@@ -72,8 +72,7 @@ __attribute__((interrupt)) VOID ISR_Timer(struct interrupt_frame* frame) {
 __attribute__((interrupt)) VOID ISR_Keyboard(struct interrupt_frame* frame) {
   UINT8 key = 0;
   
-  ASM_INB(0x00, 0x60);
-  ASM_GET_AL(key);
+  ASM_INB(key, 0x60);
 
   Keystroke = TranslateKey(key);
   KeyboardController();

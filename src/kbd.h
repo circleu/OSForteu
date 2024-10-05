@@ -1,7 +1,7 @@
 #pragma once
 
-#include "osforteutype.h"
-#include "osforteudata.h"
+#include "type.h"
+#include "data.h"
 
 #define BACKSPACE 0x08
 #define ENTER 0x13

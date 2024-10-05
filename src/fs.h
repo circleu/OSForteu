@@ -1,7 +1,7 @@
 #pragma once
 
-#include "osforteutype.h"
-#include "osforteuasm.h"
+#include "type.h"
+#include "asm.h"
 #include "scr.h"
 
 #define ATA_PRIMARY_BUS0 0x1f0 // data[R/W] | 16 bit
@@ -61,12 +61,27 @@
 #define FS_START_SECTOR 128
 
 
-UINT8 ATA_Get_STATUS();
-VOID ATA_Get_IDENTIFY(UINT16* buffer);
+struct FSInfo {
+  UINT32 FileTableStartSector;
+  UINT32 FileTableSize;
+  UINT8 FileSize;
+
+  UINT32 DptrTableStartSector;
+  UINT32 DptrTableSize;
+  UINT8 DptrSize;
+
+  UINT32 DataAreaStartSector;
+}__attribute__((packed));
+
+
+UINT8 ATA_STATUS();
+VOID ATA_IDENTIFY(UINT16* buffer);
+UINT64 ATA_READ_NATIVE_MAX_ADDRESS_EXT();
 BOOL ATA_Is_BSY();
 BOOL ATA_Is_RDY();
 BOOL ATA_Is_DRQ();
 BOOL ATA_Is_ERR();
 BOOL ATA_Is_LBA48();
-VOID ATA_Read_Sector(UINT64 sector, UINT8* buffer);
-VOID ATA_Read_Cluster(UINT64 cluster, UINT8* buffer);
+VOID ATA_READ_SECTORS_EXT(UINT64 sector, UINT8* buffer);
+VOID ATA_Read_Cluster(UINT32 cluster, UINT8* buffer);
+struct FSInfo GetFSInfo();

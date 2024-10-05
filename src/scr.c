@@ -4,6 +4,12 @@
 VOID ScreenUpdate() {
   UINT8* video = (UINT8*)0xb8000;
 
+  if (ScreenBuffer[3840] != 0) {
+    CopyByte(ScreenBuffer, ScreenBuffer, 0, 160, 3840);
+    ClearLine(24);
+    PullCursor(0, 1);
+  }
+  
   CopyByte(video, ScreenBuffer, 0, 0, BUFFER_SIZE_MAX);
 
   return;

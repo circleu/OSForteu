@@ -1,8 +1,8 @@
 #pragma once
 
-#include "osforteutype.h"
-#include "osforteuasm.h"
-#include "osforteudata.h"
+#include "type.h"
+#include "asm.h"
+#include "data.h"
 #include "kbd.h"
 #include "scr.h"
 

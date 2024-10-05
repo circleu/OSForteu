@@ -1,3 +1,7 @@
 *.img
 *.png
+out
+test
+test.c
 tmp/
+.vscode/

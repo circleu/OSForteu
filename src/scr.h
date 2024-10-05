@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdarg.h>
-#include "osforteudata.h"
+#include "data.h"
 #include "strfunc.h"
 
 
