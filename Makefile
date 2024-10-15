@@ -1,12 +1,15 @@
 CC = gcc
 CFLAGS = -c -m32 -masm=intel -mno-80387 -ffreestanding -fno-pie -O0 -nostdlib
-OBJ = tmp/main.o tmp/int.o tmp/data.o tmp/kbd.o tmp/scr.o tmp/strfunc.o tmp/fs.o tmp/math64.o
+OBJ = tmp/main.o tmp/int.o tmp/data.o tmp/kbd.o tmp/scr.o tmp/strfunc.o tmp/fs.o tmp/math64.o tmp/shell.o
 
 kernel.img : tmp/boot.bin tmp/kernel.bin
 	cat $^ > $@
 
 tmp/kernel.bin : $(OBJ)
 	ld -melf_i386 -Ttext 0x10000 -nostdlib $^ -o $@ --oformat binary
+
+tmp/shell.o : src/shell.c
+	$(CC) $(CFLAGS) $< -o $@
 
 tmp/math64.o : src/math64.c
 	$(CC) $(CFLAGS) $< -o $@

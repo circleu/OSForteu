@@ -1,7 +1,11 @@
 *.img
 *.png
+
 out
 test
 test.c
+Keyboard scancodes_ Keyboard scancodes.html
+
 tmp/
 .vscode/
+Keyboard scancodes_ Keyboard scancodes_files/

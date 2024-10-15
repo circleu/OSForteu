@@ -40,3 +40,12 @@ BOOL cmpstr(UINT8* str1, UINT8* str2) {
 
   return TRUE;
 }
+
+BOOL cmpstrl(UINT8* str1, UINT8* str2, UINT32 count) {
+  for (UINT32 i = 0; (str1[i] != 0 || str2[i] != 0) && i < count; i++) {
+    if (str1[i] != str2[i])
+      return FALSE;
+  }
+
+  return TRUE;
+}

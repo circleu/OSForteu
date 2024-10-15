@@ -6,3 +6,4 @@
 #include "fs.h"
 #include "data.h"
 #include "math64.h"
+#include "shell.h"

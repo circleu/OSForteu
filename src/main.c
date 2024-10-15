@@ -20,7 +20,7 @@ VOID main() {
   
   FSInfo = GetFSInfo();
   PrintLn("Got FS Info.", 0x07);
-  PrintfLn("This disk size has %d sector(s).", 0x07, ATA_READ_NATIVE_MAX_ADDRESS_EXT());
+  PrintfLn("This disk has %d sector(s).", 0x07, ATA_READ_NATIVE_MAX_ADDRESS_EXT());
   PrintfLn("File table starts at cluster %d.", 0x07, FSInfo.FileTableStartSector / 8);
   PrintfLn("File table size is %d byte(s).", 0x07, FSInfo.FileTableSize * 512);
   PrintfLn("File size is %d byte(s).", 0x07, FSInfo.FileSize);
@@ -28,9 +28,11 @@ VOID main() {
   PrintfLn("Dptr table size is %d byte(s).", 0x07, FSInfo.DptrTableSize * 512);
   PrintfLn("Dptr size is %d byte(s).", 0x07, FSInfo.DptrSize);
   PrintfLn("Data area starts at cluster %d.", 0x07, FSInfo.DataAreaStartSector / 8);
+  PushCursor(0, 2);
   
   // You can now use OSForteu!
 
+  Shell();
 
   LOOP:
   while (1);

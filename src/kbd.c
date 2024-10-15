@@ -44,6 +44,7 @@ UINT8 TranslateKey(UINT8 origin) {
     else if (origin == 0x0b) result = ')';
     else if (origin == 0x0c) result = '_';
     else if (origin == 0x39) result = ' ';
+    else if (origin == 0x28) result = '\"';
 
     else if (origin == 0x0e) result = BACKSPACE;
     else if (origin == 0x1c) result = ENTER;
@@ -96,6 +97,7 @@ UINT8 TranslateKey(UINT8 origin) {
     else if (origin == 0x0b) result = '0';
     else if (origin == 0x0c) result = '-';
     else if (origin == 0x39) result = ' ';
+    else if (origin == 0x28) result = '\'';
 
     else if (origin == 0x0e) result = BACKSPACE;
     else if (origin == 0x1c) result = ENTER;

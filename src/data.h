@@ -11,7 +11,7 @@ extern UINT8 Keystroke;
 extern UINT8 KeyboardBuffer[BUFFER_SIZE_MAX];
 extern UINT16 KeyboardBufferIndex;
 
-extern UINT8 ScreenBuffer[BUFFER_SIZE_MAX];
+extern UINT8 ScreenBuffer[BUFFER_SIZE_MAX * 2];
 extern UINT32 Cursor[2];
 
 extern UINT16 ATA_IDENTIFY_Data[256];

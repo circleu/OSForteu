@@ -3,6 +3,7 @@
 #include "type.h"
 #include "asm.h"
 #include "scr.h"
+#include "data.h"
 
 #define ATA_PRIMARY_BUS0 0x1f0 // data[R/W] | 16 bit
 #define ATA_PRIMARY_BUS1 0x1f1 // error[R], features[W] | 8/16 bit
@@ -73,6 +74,30 @@ struct FSInfo {
   UINT32 DataAreaStartSector;
 }__attribute__((packed));
 
+struct Date {
+  UINT16 Year;
+  UINT8 Month;
+  UINT8 Date;
+  UINT8 Hour;
+  UINT8 Minute;
+  UINT8 Second;
+}__attribute__((packed));
+
+struct File {
+  UINT8 Name[13];
+  UINT8 Type;
+  UINT32 PtrTableOffset;
+  struct Date CreateDate;
+  struct Date EditDate;
+}__attribute__((packed));
+
+struct FilePointer {
+  UINT8 Status0;
+  UINT8 Status1;
+  UINT32 DataAreaOffset[7];
+  UINT8 Reserved[2];
+}__attribute__((packed));
+
 
 UINT8 ATA_STATUS();
 VOID ATA_IDENTIFY(UINT16* buffer);
@@ -85,3 +110,4 @@ BOOL ATA_Is_LBA48();
 VOID ATA_READ_SECTORS_EXT(UINT64 sector, UINT8* buffer);
 VOID ATA_Read_Cluster(UINT32 cluster, UINT8* buffer);
 struct FSInfo GetFSInfo();
+struct File SeekFile(UINT8* name);

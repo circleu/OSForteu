@@ -138,10 +138,10 @@ VOID ATA_READ_SECTORS_EXT(UINT64 sector, UINT8* buffer) {
 
 VOID ATA_Read_Cluster(UINT32 cluster, UINT8* buffer) {
   UINT8 temp[512] = {0, };
-  cluster *= 8;
+  UINT64 sector = (UINT64)(cluster * 8);
 
   for (UINT8 i = 0; i < 8; i++) {
-    ATA_READ_SECTORS_EXT(cluster + i, temp);
+    ATA_READ_SECTORS_EXT(sector + i, temp);
     CopyByte(buffer, temp, 512 * i, 0, 512);
   }
 
@@ -155,5 +155,29 @@ struct FSInfo GetFSInfo() {
   ATA_READ_SECTORS_EXT(FS_START_SECTOR, buffer);
   ptr = (struct FSInfo*)buffer;
 
+  return *ptr;
+}
+
+struct File SeekFile(UINT8* name) {
+  Timer = 0;
+
+  UINT8 temp[512] = {0, };
+  struct File* ptr;
+
+  for (UINT32 i = 0; i < FSInfo.FileTableSize; i++) {
+    ATA_READ_SECTORS_EXT(FSInfo.FileTableStartSector + i, temp);
+
+    for (UINT32 j = 0; j < 512 / FSInfo.FileSize; j++) {
+      ptr = (struct File*)(temp + FSInfo.FileSize * j);
+      
+      if (cmpstr(ptr->Name, name)) {
+        PrintfLn("Found file \'%s\'. | Seek Time: %d", 0x03, ptr->Name, Timer);
+        return *ptr;
+      }
+    }
+  }
+  
+  CopyByte(ptr->Name, "~ERROR", 0, 0, 6);
+  PrintfLn("Couldn't find file \'%s\'. | Seek Time: %d", 0x03, name, Timer);
   return *ptr;
 }
