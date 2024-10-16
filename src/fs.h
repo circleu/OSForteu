@@ -67,9 +67,9 @@ struct FSInfo {
   UINT32 FileTableSize;
   UINT8 FileSize;
 
-  UINT32 DptrTableStartSector;
-  UINT32 DptrTableSize;
-  UINT8 DptrSize;
+  UINT32 FptrTableStartSector;
+  UINT32 FptrTableSize;
+  UINT8 FptrSize;
 
   UINT32 DataAreaStartSector;
 }__attribute__((packed));
@@ -86,12 +86,12 @@ struct Date {
 struct File {
   UINT8 Name[13];
   UINT8 Type;
-  UINT32 PtrTableOffset;
+  UINT32 FptrTableOffset;
   struct Date CreateDate;
   struct Date EditDate;
 }__attribute__((packed));
 
-struct FilePointer {
+struct Fptr {
   UINT8 Status0;
   UINT8 Status1;
   UINT32 DataAreaOffset[7];
@@ -108,6 +108,12 @@ BOOL ATA_Is_DRQ();
 BOOL ATA_Is_ERR();
 BOOL ATA_Is_LBA48();
 VOID ATA_READ_SECTORS_EXT(UINT64 sector, UINT8* buffer);
+VOID ATA_WRITE_SECTORS_EXT(UINT64 sector, UINT8* buffer);
 VOID ATA_Read_Cluster(UINT32 cluster, UINT8* buffer);
+VOID ATA_Write_Cluster(UINT32 cluster, UINT8* buffer);
 struct FSInfo GetFSInfo();
 struct File SeekFile(UINT8* name);
+struct Fptr SeekFptr(UINT32 offset);
+VOID ReadFile(UINT8* name, UINT8* buffer);
+VOID WriteFile(UINT8* name, UINT8* buffer);
+UINT8 CheckFileAccessibility(struct File file);

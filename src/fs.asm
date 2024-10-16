@@ -14,7 +14,8 @@ times (128+8)*512 - ($ - $$) db 0
 
 db 'root' ; name
 times 9 db 0
-db 1 ; type | 0x00 file | 0x01 directory
+db 0x11 ; type | 0x~0 file | 0x~1 directory
+        ;      | 0x0~ read/write | 0x1~ read-only | 0x2~ inaccessible
 dd 0 ; ptr table offset
 ; create date
 dw 1970 ; year
@@ -69,8 +70,8 @@ db 0
 db 0
 db 0
 
-times (128+8+(32 * 99))*512 - ($ - $$) db 0
-; 100th file
+times (128+8+(32 * 511))*512 - ($ - $$) db 0
+; 511th file
 db 'far'
 times 10 db 0
 db 0
@@ -138,6 +139,25 @@ db 0
 db 0
 db 0
 
+db 'root_hw'
+times 6 db 0
+db 0
+dd 5
+; create date
+dw 1970
+db 1
+db 1
+db 0
+db 0
+db 0
+; edit date
+dw 1970
+db 1
+db 1
+db 0
+db 0
+db 0
+
 times (128+8+65536+65536+(8*1))*512 - ($ - $$) db 0
 
 db 'Hello'
@@ -155,3 +175,7 @@ times (128+8+65536+65536+(8*4))*512 - ($ - $$) db 0
 db 'This file is located at offset 4.'
 
 times (128+8+65536+65536+(8*5))*512 - ($ - $$) db 0
+
+db 'Hello, World! - from root directory.'
+
+times (128+8+65536+65536+(8*6))*512 - ($ - $$) db 0

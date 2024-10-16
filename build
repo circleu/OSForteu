@@ -9,7 +9,7 @@ make
 
 nasm -f bin -o fs.img src/fs.asm
 
-dd if=fs.img of=disk.img bs=512 count=4096 conv=notrunc
+dd if=fs.img of=disk.img bs=512 count=262144 conv=notrunc
 dd if=kernel.img of=disk.img bs=512 count=128 conv=notrunc
 fi
 
@@ -27,6 +27,6 @@ then
 
 nasm -f bin -o fs.img src/fs.asm
 
-dd if=fs.img of=disk.img bs=512 count=4096 conv=notrunc
+dd if=fs.img of=disk.img bs=512 count=262144 conv=notrunc
 dd if=kernel.img of=disk.img bs=512 count=128 conv=notrunc
 fi

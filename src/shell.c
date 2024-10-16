@@ -1,8 +1,12 @@
 #include "shell.h"
 
+
+UINT8 CurrentDirectory[13];
+UINT8 DiskOutBuffer[DISK_BUFFER_SIZE_MAX] = {0, };
+UINT8 DiskInBuffer[DISK_BUFFER_SIZE_MAX] = {0, };
+
 VOID Shell() {
   struct File file = SeekFile("root");
-  UINT8 CurrentDirectory[13];
   CopyByte(CurrentDirectory, file.Name, 0, 0, 13);
 
   while (1) {
@@ -17,6 +21,8 @@ VOID Shell() {
       
       FlushBuffer(KeyboardBuffer);
       KeyboardBufferIndex = 0;
+
+      ClearLine(Cursor[1]);
     }
     else if (Keystroke == BACKSPACE)
       ClearLine(Cursor[1]);
@@ -48,26 +54,17 @@ VOID TranslateCommand(UINT8* str) {
     return;
 
   else if (cmpstr(parsed[0], "seek")) {
-    ASM_STI;
-
-    struct File file = SeekFile(parsed[1]);
-
-    ASM_CLI;
+    shcmd_seek(parsed[1]);
     return;
   }
 
   else if (cmpstr(parsed[0], "read")) {
-    ASM_STI;
-
-    struct File file = SeekFile(parsed[1]);
-    UINT8 buffer[4096] = {0, };
-
-
-    ASM_CLI;
+    shcmd_read(parsed[1]);
+    return;
   }
 
-  else if (cmpstr(parsed[0], "print")) {
-    PrintLn(parsed[1], 0x03);
+  else if (cmpstr(parsed[0], "write")) {
+    shcmd_write(parsed[1], parsed[2]);
     return;
   }
 
@@ -81,6 +78,43 @@ VOID TranslateCommand(UINT8* str) {
     PrintfLn("Couldn't find command \'%s\'.", 0x03, KeyboardBuffer);
     return;
   }
+}
+
+VOID shcmd_seek(UINT8* arg0) {
+  ASM_STI;
+  Timer = 0;
+
+  struct File file = SeekFile(arg0);
+
+  ASM_CLI;
+  PrintfLn("File Name: %s | Seek Time: %d", 0x03, file.Name, Timer);
+  return;
+}
+
+VOID shcmd_read(UINT8* arg0) {
+  ASM_STI;
+  Timer = 0;
+
+  initdiskbuffer(DiskOutBuffer);
+  ReadFile(arg0, DiskOutBuffer);
+
+  ASM_CLI;
+  PrintLn(DiskOutBuffer, 0x03);
+  PrintfLn("Read Time: %d", 0x03, Timer);
+  return;
+}
+
+VOID shcmd_write(UINT8* arg0, UINT8* arg1) {
+  ASM_STI;
+  Timer = 0;
+
+  initdiskbuffer(DiskInBuffer);
+  CopyByte(DiskInBuffer, arg1, 0, 0, ARG_SIZE_MAX);
+  WriteFile(arg0, DiskInBuffer);
+
+  ASM_CLI;
+  PrintfLn("Write Time: %d", 0x03, Timer);
+  return;
 }
 
 VOID parsestr(UINT8* str, UINT8 dest[ARG_SIZE_MAX][ARG_SIZE_MAX]) {
@@ -106,4 +140,12 @@ VOID parsestr(UINT8* str, UINT8 dest[ARG_SIZE_MAX][ARG_SIZE_MAX]) {
       dest[row][col++] = str[i];
     }
   }
+}
+
+VOID initdiskbuffer(UINT8* buffer) {
+  for (UINT32 i = 0; i < DISK_BUFFER_SIZE_MAX; i++) {
+    buffer[i] = 0;
+  }
+
+  return;
 }

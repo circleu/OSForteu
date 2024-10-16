@@ -24,9 +24,9 @@ VOID main() {
   PrintfLn("File table starts at cluster %d.", 0x07, FSInfo.FileTableStartSector / 8);
   PrintfLn("File table size is %d byte(s).", 0x07, FSInfo.FileTableSize * 512);
   PrintfLn("File size is %d byte(s).", 0x07, FSInfo.FileSize);
-  PrintfLn("Dptr table starts at cluster %d.", 0x07, FSInfo.DptrTableStartSector / 8);
-  PrintfLn("Dptr table size is %d byte(s).", 0x07, FSInfo.DptrTableSize * 512);
-  PrintfLn("Dptr size is %d byte(s).", 0x07, FSInfo.DptrSize);
+  PrintfLn("Fptr table starts at cluster %d.", 0x07, FSInfo.FptrTableStartSector / 8);
+  PrintfLn("Fptr table size is %d byte(s).", 0x07, FSInfo.FptrTableSize * 512);
+  PrintfLn("Fptr size is %d byte(s).", 0x07, FSInfo.FptrSize);
   PrintfLn("Data area starts at cluster %d.", 0x07, FSInfo.DataAreaStartSector / 8);
   PushCursor(0, 2);
   
