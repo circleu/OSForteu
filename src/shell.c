@@ -6,13 +6,12 @@ UINT8 DiskOutBuffer[DISK_BUFFER_SIZE_MAX] = {0, };
 UINT8 DiskInBuffer[DISK_BUFFER_SIZE_MAX] = {0, };
 
 VOID Shell() {
-  struct File file = SeekFile("root");
+  UINT32 offset;
+  struct File file = SeekFile("root", &offset);
   CopyByte(CurrentDirectory, file.Name, 0, 0, 13);
 
   while (1) {
     ASM_CLI;
-    ASM_IRQ0_ONLY;
-    ASM_STI;
 
     if (Keystroke == ENTER) {
       PushCursor(0, 1);
@@ -31,8 +30,6 @@ VOID Shell() {
     Printf("%s>>%s", 0, Cursor[1], 0x07, CurrentDirectory, KeyboardBuffer);
     Keystroke = 0;
 
-    ASM_CLI;
-    ASM_IRQ_ALL;
     ASM_STI;
   }
 
@@ -54,17 +51,42 @@ VOID TranslateCommand(UINT8* str) {
     return;
 
   else if (cmpstr(parsed[0], "seek")) {
+    if (cmpstr(parsed[1], "")) {
+      PrintLn("Usage: seek <file name>", 0x03);
+      return;
+    }
+
     shcmd_seek(parsed[1]);
     return;
   }
 
   else if (cmpstr(parsed[0], "read")) {
+    if (cmpstr(parsed[1], "")) {
+      PrintLn("Usage: read <file name>", 0x03);
+      return;
+    }
+
     shcmd_read(parsed[1]);
     return;
   }
 
   else if (cmpstr(parsed[0], "write")) {
+    if (cmpstr(parsed[1], "") || cmpstr(parsed[2], "")) {
+      PrintLn("Usage: write <file name> <text>", 0x03);
+      return;
+    }
+
     shcmd_write(parsed[1], parsed[2]);
+    return;
+  }
+
+  else if (cmpstr(parsed[0], "create")) {
+    if (cmpstr(parsed[1], "") || cmpstr(parsed[2], "") || cmpstr(parsed[3], "")) {
+      PrintLn("Usage: create <file name> <type>[file / dir] <read-only>[true / false]", 0x03);
+      return;
+    }
+
+    shcmd_create(parsed[1], parsed[2], parsed[3]);
     return;
   }
 
@@ -84,7 +106,8 @@ VOID shcmd_seek(UINT8* arg0) {
   ASM_STI;
   Timer = 0;
 
-  struct File file = SeekFile(arg0);
+  UINT32 offset;
+  struct File file = SeekFile(arg0, &offset);
 
   ASM_CLI;
   PrintfLn("File Name: %s | Seek Time: %d", 0x03, file.Name, Timer);
@@ -95,7 +118,7 @@ VOID shcmd_read(UINT8* arg0) {
   ASM_STI;
   Timer = 0;
 
-  initdiskbuffer(DiskOutBuffer);
+  FlushDiskBuffer(DiskOutBuffer);
   ReadFile(arg0, DiskOutBuffer);
 
   ASM_CLI;
@@ -108,12 +131,23 @@ VOID shcmd_write(UINT8* arg0, UINT8* arg1) {
   ASM_STI;
   Timer = 0;
 
-  initdiskbuffer(DiskInBuffer);
+  FlushDiskBuffer(DiskInBuffer);
   CopyByte(DiskInBuffer, arg1, 0, 0, ARG_SIZE_MAX);
   WriteFile(arg0, DiskInBuffer);
 
   ASM_CLI;
   PrintfLn("Write Time: %d", 0x03, Timer);
+  return;
+}
+
+VOID shcmd_create(UINT8* arg0, UINT8* arg1, UINT8* arg2) {
+  ASM_STI;
+  Timer = 0;
+
+  CreateFile(arg0, arg1, arg2);
+
+  ASM_CLI;
+  PrintfLn("Create Time: %d", 0x03, Timer);
   return;
 }
 
@@ -142,7 +176,7 @@ VOID parsestr(UINT8* str, UINT8 dest[ARG_SIZE_MAX][ARG_SIZE_MAX]) {
   }
 }
 
-VOID initdiskbuffer(UINT8* buffer) {
+VOID FlushDiskBuffer(UINT8* buffer) {
   for (UINT32 i = 0; i < DISK_BUFFER_SIZE_MAX; i++) {
     buffer[i] = 0;
   }

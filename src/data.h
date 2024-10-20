@@ -17,5 +17,7 @@ extern UINT32 Cursor[2];
 extern UINT16 ATA_IDENTIFY_Data[256];
 extern struct FSInfo FSInfo;
 
+extern struct Date CurrentTime;
+
 VOID CopyByte(UINT8* dest, UINT8* origin, UINT32 d_start, UINT32 o_start, UINT32 count);
 VOID FlushBuffer(UINT8* buffer);

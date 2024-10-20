@@ -34,7 +34,7 @@ db 0 ; second
 
 db 'foo'
 times 10 db 0
-db 0
+db 0x00
 dd 1
 ; create date
 dw 1970
@@ -53,7 +53,7 @@ db 0
 
 db 'bar'
 times 10 db 0
-db 0
+db 0x00
 dd 2
 ; create date
 dw 1970
@@ -70,11 +70,11 @@ db 0
 db 0
 db 0
 
-times (128+8+(32 * 511))*512 - ($ - $$) db 0
-; 511th file
+times (128+8)*512 + (32 * 4095) - ($ - $$) db 0
+; 4096th file
 db 'far'
 times 10 db 0
-db 0
+db 0x00
 dd 4
 ; create date
 dw 1970
@@ -122,7 +122,7 @@ times (128+8+65536+65536)*512 - ($ - $$) db 0
 
 db 'inroot'
 times 7 db 0
-db 0
+db 0x00
 dd 3
 ; create date
 dw 1970
@@ -141,7 +141,7 @@ db 0
 
 db 'root_hw'
 times 6 db 0
-db 0
+db 0x00
 dd 5
 ; create date
 dw 1970

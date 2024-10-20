@@ -2,16 +2,21 @@
 
 VOID main() {
   // Setup...
+  PushCursor(0, 1);
+  
   SetIDT();
   PrintLn("IDT is set.", 0x07);
 
   ASM_STI;
   PrintLn("Enabled all interrupts.", 0x07);
+
+  EnableRTC();
+  PrintLn("Enabled RTC.", 0x07);
   
   ATA_IDENTIFY(ATA_IDENTIFY_Data);
   PrintLn("Sent IDENTIFY command.", 0x07);
 
-  if (ATA_Is_LBA48() != 1) {
+  if (ATA_IsLBA48() != 1) {
     PrintLn("This device doesn't support LBA48.", 0x03);
     goto LOOP;
   }

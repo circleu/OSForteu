@@ -53,9 +53,8 @@ PrepareProtectedMode:
   out 0xa1, al
 
   mov al, 0xff
-  out 0xa1, al
-  mov al, 0xfb
   out 0x21, al
+  out 0xa1, al
 
   lgdt[GDTR]
 

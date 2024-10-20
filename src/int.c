@@ -2,7 +2,7 @@
 
 
 VOID SetIDT() {
-  struct IDT IDT[3];
+  struct IDT IDT[4];
   struct IDTR IDTR = (struct IDTR){256 * 8 - 1, 0};
   UINT32 isr;
   UINT16* idt_ptr;
@@ -25,6 +25,12 @@ VOID SetIDT() {
   IDT[2].Type = (UINT16)0x8e00;
   IDT[2].OffsetHigh = (UINT16)(isr >> 16);
 
+  isr = (UINT32)ISR_RTC;
+  IDT[3].OffsetLow = (UINT16)(isr & 0xffff);
+  IDT[3].Selector = (UINT16)0x08;
+  IDT[3].Type = (UINT16)0x8e00;
+  IDT[3].OffsetHigh = (UINT16)(isr >> 16);
+
   for (UINT32 i = 0; i < 0x100; i++) {
     idt_ptr = (UINT16*)(i * 8);
     *idt_ptr++ = IDT[0].OffsetLow;
@@ -45,7 +51,13 @@ VOID SetIDT() {
   *idt_ptr++ = IDT[2].Type;
   *idt_ptr++ = IDT[2].OffsetHigh;
 
-  ASM_OUTB(0x64, 0xae);
+  idt_ptr = (UINT16*)(0x28 * 8);
+  *idt_ptr++ = IDT[3].OffsetLow;
+  *idt_ptr++ = IDT[3].Selector;
+  *idt_ptr++ = IDT[3].Type;
+  *idt_ptr++ = IDT[3].OffsetHigh;
+
+  ASM_OUTB(0x64, 0xae); // setting keyboard controller
   ASM_LIDT(&IDTR);
   ASM_OUTB(MASTER_PIC_DATA, 0x00);
   ASM_OUTB(SLAVE_PIC_DATA, 0x00);
@@ -73,13 +85,25 @@ __attribute__((interrupt)) VOID ISR_Keyboard(struct interrupt_frame* frame) {
   UINT8 key = 0;
   
   ASM_INB(key, 0x60);
+  ASM_OUTB(MASTER_PIC_COMMAND, 0x20);
 
   Keystroke = TranslateKey(key);
   KeyboardController();
 
-  ASM_OUTB(MASTER_PIC_COMMAND, 0x20);
-
   return;
 }
 
+__attribute__((interrupt)) VOID ISR_RTC(struct interrupt_frame*) {
+  ASM_OUTB(MASTER_PIC_COMMAND, 0x20);
+  ASM_OUTB(SLAVE_PIC_COMMAND, 0x20);
 
+  UINT8 throw;
+
+  RTC_GetTime(&CurrentTime);
+  Printf("%d.%d.%d. %d:%d:%d", 0, 0, 0x03, CurrentTime.Year, CurrentTime.Month, CurrentTime.Day, CurrentTime.Hours, CurrentTime.Minutes, CurrentTime.Seconds);
+
+  ASM_OUTB(0x70, 0x0c);
+  ASM_INB(throw, 0x71);
+
+  return;
+}

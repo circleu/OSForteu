@@ -74,15 +74,6 @@ struct FSInfo {
   UINT32 DataAreaStartSector;
 }__attribute__((packed));
 
-struct Date {
-  UINT16 Year;
-  UINT8 Month;
-  UINT8 Date;
-  UINT8 Hour;
-  UINT8 Minute;
-  UINT8 Second;
-}__attribute__((packed));
-
 struct File {
   UINT8 Name[13];
   UINT8 Type;
@@ -102,18 +93,19 @@ struct Fptr {
 UINT8 ATA_STATUS();
 VOID ATA_IDENTIFY(UINT16* buffer);
 UINT64 ATA_READ_NATIVE_MAX_ADDRESS_EXT();
-BOOL ATA_Is_BSY();
-BOOL ATA_Is_RDY();
-BOOL ATA_Is_DRQ();
-BOOL ATA_Is_ERR();
-BOOL ATA_Is_LBA48();
+BOOL ATA_IsBSY();
+BOOL ATA_IsRDY();
+BOOL ATA_IsDRQ();
+BOOL ATA_IsERR();
+BOOL ATA_IsLBA48();
 VOID ATA_READ_SECTORS_EXT(UINT64 sector, UINT8* buffer);
 VOID ATA_WRITE_SECTORS_EXT(UINT64 sector, UINT8* buffer);
 VOID ATA_Read_Cluster(UINT32 cluster, UINT8* buffer);
 VOID ATA_Write_Cluster(UINT32 cluster, UINT8* buffer);
 struct FSInfo GetFSInfo();
-struct File SeekFile(UINT8* name);
+struct File SeekFile(UINT8* name, UINT32* dest_offset); // offset of found file will be stored at dest_offset
 struct Fptr SeekFptr(UINT32 offset);
 VOID ReadFile(UINT8* name, UINT8* buffer);
 VOID WriteFile(UINT8* name, UINT8* buffer);
 UINT8 CheckFileAccessibility(struct File file);
+VOID CreateFile(UINT8* name, UINT8* type, UINT8* ro);
